@@ -21,13 +21,11 @@ class VersionRepository extends ServiceEntityRepository
         parent::__construct($registry, Version::class);
     }
 
-    public function findByExampleField($value): array
+    public function findAllActiveWithLogs(): array
     {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('version')
+            ->andWhere('version.release_date IS NOT NULL')
+            ->orderBy('version.release_date', 'DESC')
             ->getQuery()
             ->getResult();
     }
