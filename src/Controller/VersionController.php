@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/versions', name: 'api_versions_')]
+#[Route('/versions', name: 'versions_')]
 class VersionController extends AbstractController
 {
     #[Route('/public', name: 'public', methods: ['get'])]
