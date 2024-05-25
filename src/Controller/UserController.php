@@ -51,6 +51,7 @@ class UserController extends AbstractController
         $user->setName($data['name']);
         $user->setEmail($data['email']);
         $user->setAvatar($data['avatar']);
+        $user->setRoles(['ROLE_ADMIN']);
 
         $hashedPassword = $passwordHasher->hashPassword(
             $user,
@@ -68,6 +69,33 @@ class UserController extends AbstractController
             "payload" => [
                 "userId" => $user->getId()
             ]
+        ]);
+    }
+
+    #[Route('/{id}', name: 'delete_user', methods: ['DELETE'])]
+    public function deleteUser(UserRepository $userRepository, EntityManagerInterface $entityManager, $id): JsonResponse
+    {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $user = $userRepository->find($id);
+            if (!is_null($user)) {
+                $entityManager->remove($user);
+                $entityManager->flush();
+
+                return $this->json([
+                    "status" => true,
+                    "message" => "User successfully deleted."
+                ]);
+            }
+
+            return $this->json([
+                "status" => false,
+                "message" => "The user you're trying to delete doesn't exist."
+            ]);
+        }
+
+        return $this->json([
+            "status" => false,
+            "message" => "You are not allowed to delete users."
         ]);
     }
 }
