@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/versions', name: 'versions_')]
 class VersionController extends AbstractController
 {
-    #[Route('/public', name: 'public', methods: ['get'])]
+    #[Route('/public', name: 'public', methods: ['GET'])]
     public function index(VersionRepository $versionRepository, LogRepository $logRepository): JsonResponse
     {
         $versions = $versionRepository->findAllActiveWithLogs();
