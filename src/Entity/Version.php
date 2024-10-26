@@ -28,6 +28,9 @@ class Version
     #[ORM\OneToMany(targetEntity: Log::class, mappedBy: 'version', orphanRemoval: true)]
     private Collection $logs;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->logs = new ArrayCollection();
@@ -52,12 +55,24 @@ class Version
 
     public function getReleaseDate(): ?\DateTimeInterface
     {
-        return $this->release_date;
+        return $this->release_date ?? null;
     }
 
     public function setReleaseDate(?\DateTimeInterface $release_date): static
     {
         $this->release_date = $release_date;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
