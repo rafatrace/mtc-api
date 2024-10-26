@@ -21,11 +21,19 @@ class VersionRepository extends ServiceEntityRepository
         parent::__construct($registry, Version::class);
     }
 
-    public function findAllAndOrderByLatest(): array
+    public function findAllReleased(): array
     {
         return $this->createQueryBuilder('version')
             ->andWhere('version.release_date IS NOT NULL')
             ->orderBy('version.release_date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllAndOrderByLatest(): array
+    {
+        return $this->createQueryBuilder('version')
+            ->orderBy('version.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

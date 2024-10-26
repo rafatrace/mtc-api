@@ -15,7 +15,7 @@ class PublicVersionController extends AbstractController
     #[Route('/public', name: 'public', methods: ['GET'])]
     public function index(VersionRepository $versionRepository, LogRepository $logRepository): JsonResponse
     {
-        $versions = $versionRepository->findAllAndOrderByLatest();
+        $versions = $versionRepository->findAllReleased();
 
         $data = [];
 

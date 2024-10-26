@@ -21,7 +21,7 @@ class Log
     #[ORM\Column(length: 30)]
     private ?string $type = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)] // fixed, improved, new, remove
     private ?string $text = null;
 
     public function getId(): ?int
