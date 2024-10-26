@@ -21,7 +21,7 @@ class VersionRepository extends ServiceEntityRepository
         parent::__construct($registry, Version::class);
     }
 
-    public function findAllActiveWithLogs(): array
+    public function findAllAndOrderByLatest(): array
     {
         return $this->createQueryBuilder('version')
             ->andWhere('version.release_date IS NOT NULL')

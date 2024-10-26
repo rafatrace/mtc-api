@@ -10,12 +10,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/versions', name: 'versions_')]
-class VersionController extends AbstractController
+class PublicVersionController extends AbstractController
 {
     #[Route('/public', name: 'public', methods: ['GET'])]
     public function index(VersionRepository $versionRepository, LogRepository $logRepository): JsonResponse
     {
-        $versions = $versionRepository->findAllActiveWithLogs();
+        $versions = $versionRepository->findAllAndOrderByLatest();
 
         $data = [];
 
