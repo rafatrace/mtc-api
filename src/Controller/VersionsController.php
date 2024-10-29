@@ -57,4 +57,35 @@ class VersionsController extends AbstractController
             ]
         ]);
     }
+
+    #[Route('/{id}', name: 'update_name', methods: ['PATCH'])]
+    public function updateName(VersionRepository $versionRepository, EntityManagerInterface $entityManager, Request $request, $id): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        // Check if name field is received
+        if (!isset($data['name']) || empty($data['name'])) {
+            return $this->json([
+                "status" => false,
+                "message" => "Please you need to set a new name."
+            ]);
+        }
+
+        $version = $versionRepository->find($id);
+        $version->setName($data['name']);
+
+        $entityManager->persist($version);
+        $entityManager->flush();
+
+        return $this->json([
+            "status" => true,
+            "message" => "Version created successfully",
+            "payload" => [
+                "id" => $version->getId(),
+                "name" => $version->getName(),
+                "releasedDate" => $version->getReleaseDate(),
+                "createdAt" => $version->getCreatedAt()
+            ]
+        ]);
+    }
 }
