@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Version;
+use App\Repository\LogRepository;
 use App\Repository\VersionRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,6 +55,23 @@ class VersionsController extends AbstractController
                 "name" => $version->getName(),
                 "releasedDate" => $version->getReleaseDate(),
                 "createdAt" => $version->getCreatedAt()
+            ]
+        ]);
+    }
+
+    #[Route('/{id}', name: 'details', methods: ['GET'])]
+    public function details(Version $version, LogRepository $logRepository): JsonResponse
+    {
+        $versionId = $version->getId();
+
+        return $this->json([
+            "status" => true,
+            "payload" => [
+                "id" => $versionId,
+                "name" => $version->getName(),
+                "releasedDate" => $version->getReleaseDate(),
+                "createdAt" => $version->getCreatedAt(),
+                'logs' => $logRepository->findLogsByVersionGroupedByTypeWithDetails($versionId)
             ]
         ]);
     }

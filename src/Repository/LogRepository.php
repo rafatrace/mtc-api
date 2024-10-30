@@ -44,4 +44,31 @@ class LogRepository extends ServiceEntityRepository
 
         return $groupedLogs;
     }
+
+    public function findLogsByVersionGroupedByTypeWithDetails(int $version): array
+    {
+        // Get all logs
+        $logs = $this->createQueryBuilder('log')
+            ->andWhere('log.version = :versionId')
+            ->setParameter('versionId', $version)
+            ->getQuery()
+            ->getResult();
+
+        // Group by type
+        $groupedLogs = [
+            "new" => [],
+            "improved" => [],
+            "fixed" => [],
+            "remove" => [],
+        ];
+
+        foreach ($logs as $log) {
+            $groupedLogs[$log->getType()][] = [
+                "id" => $log->getId(),
+                "text" => $log->getText()
+            ];
+        }
+
+        return $groupedLogs;
+    }
 }
