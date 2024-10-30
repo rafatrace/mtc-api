@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Log;
+use App\Repository\LogRepository;
 use App\Repository\VersionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
@@ -63,54 +64,48 @@ class LogsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'update_name', methods: ['PATCH'])]
-    public function updateName(VersionRepository $versionRepository, EntityManagerInterface $entityManager, Request $request, $id): JsonResponse
+    #[Route('/{id}', name: 'update_log_text', methods: ['PATCH'])]
+    public function updateLogText(LogRepository $logRepository, EntityManagerInterface $entityManager, Request $request, $id): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        // Check if name field is received
-        if (!isset($data['name']) || empty($data['name'])) {
+        // Check if text field is received
+        if (!isset($data['text']) || empty($data['text'])) {
             return $this->json([
                 "status" => false,
-                "message" => "Please you need to set a new name."
+                "message" => "Please you need to set a new text."
             ]);
         }
 
-        $version = $versionRepository->find($id);
-        $version->setName($data['name']);
+        $log = $logRepository->find($id);
+        $log->setText($data['text']);
 
-        $entityManager->persist($version);
+        $entityManager->persist($log);
         $entityManager->flush();
 
         return $this->json([
             "status" => true,
-            "message" => "Version created successfully",
-            "payload" => [
-                "id" => $version->getId(),
-                "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate(),
-                "createdAt" => $version->getCreatedAt()
-            ]
+            "message" => "Log text edited successfully"
         ]);
     }
 
-    #[Route('/{id}', name: 'delete_version', methods: ['DELETE'])]
-    public function deleteVersion(VersionRepository $versionRepository, EntityManagerInterface $entityManager, $id): JsonResponse
+    #[Route('/{id}', name: 'delete_log', methods: ['DELETE'])]
+    public function deleteLog(LogRepository $logRepository, EntityManagerInterface $entityManager, $id): JsonResponse
     {
-        $version = $versionRepository->find($id);
-        if (!is_null($version)) {
-            $entityManager->remove($version);
+        $log = $logRepository->find($id);
+        if (!is_null($log)) {
+            $entityManager->remove($log);
             $entityManager->flush();
 
             return $this->json([
                 "status" => true,
-                "message" => "Version successfully deleted."
+                "message" => "Log successfully deleted."
             ]);
         }
 
         return $this->json([
             "status" => false,
-            "message" => "The version you're trying to delete doesn't exist."
+            "message" => "The log you're trying to delete doesn't exist."
         ]);
     }
 }
