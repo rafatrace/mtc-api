@@ -24,8 +24,8 @@ class VersionsController extends AbstractController
             $transformedVersions[] = [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releaseDate" => $version->getReleaseDate(),
-                "createdAt" => $version->getCreatedAt(),
+                "releaseDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ];
         }
 
@@ -53,8 +53,8 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate(),
-                "createdAt" => $version->getCreatedAt()
+                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ]
         ]);
     }
@@ -69,8 +69,8 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $versionId,
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate(),
-                "createdAt" => $version->getCreatedAt(),
+                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "createdAt" => $version->getCreatedAt()->format('Y-m-d'),
                 'logs' => $logRepository->findLogsByVersionGroupedByTypeWithDetails($versionId)
             ]
         ]);
@@ -101,8 +101,8 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate(),
-                "createdAt" => $version->getCreatedAt()
+                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ]
         ]);
     }
@@ -124,6 +124,43 @@ class VersionsController extends AbstractController
         return $this->json([
             "status" => false,
             "message" => "The version you're trying to delete doesn't exist."
+        ]);
+    }
+
+    #[Route('/{id}/release', name: 'release', methods: ['PATCH'])]
+    public function releaseVersion(VersionRepository $versionRepository, EntityManagerInterface $entityManager, $id): JsonResponse
+    {
+        $version = $versionRepository->find($id);
+
+        if (is_null($version)) {
+            return $this->json([
+                "status" => false,
+                "message" => "The version you're trying to release doesn't exist."
+            ]);
+        }
+
+        // Check if version has any logs
+        if (count($version->getLogs()) == 0) {
+            return $this->json([
+                "status" => false,
+                "message" => "You can't release a version without logs."
+            ]);
+        }
+
+        $version->setReleaseDate(new \DateTimeImmutable());
+
+        $entityManager->persist($version);
+        $entityManager->flush();
+
+        return $this->json([
+            "status" => true,
+            "message" => "Version released successfully",
+            "payload" => [
+                "id" => $version->getId(),
+                "name" => $version->getName(),
+                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "createdAt" => $version->getCreatedAt()->format('Y-m-d')
+            ]
         ]);
     }
 }
