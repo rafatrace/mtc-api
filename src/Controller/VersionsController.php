@@ -88,4 +88,24 @@ class VersionsController extends AbstractController
             ]
         ]);
     }
+
+    #[Route('/{id}', name: 'delete_version', methods: ['DELETE'])]
+    public function deleteVersion(VersionRepository $versionRepository, EntityManagerInterface $entityManager, $id): JsonResponse
+    {
+        $version = $versionRepository->find($id);
+        if (!is_null($version)) {
+            $entityManager->remove($version);
+            $entityManager->flush();
+
+            return $this->json([
+                "status" => true,
+                "message" => "Version successfully deleted."
+            ]);
+        }
+
+        return $this->json([
+            "status" => false,
+            "message" => "The version you're trying to delete doesn't exist."
+        ]);
+    }
 }
