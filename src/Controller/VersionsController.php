@@ -24,7 +24,7 @@ class VersionsController extends AbstractController
             $transformedVersions[] = [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releaseDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "releaseDate" => $version->getReleaseDate()?->format('Y-m-d'),
                 "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ];
         }
@@ -53,7 +53,7 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "releasedDate" => $version->getReleaseDate()?->format('Y-m-d'),
                 "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ]
         ]);
@@ -69,7 +69,7 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $versionId,
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "releasedDate" => $version->getReleaseDate()?->format('Y-m-d'),
                 "createdAt" => $version->getCreatedAt()->format('Y-m-d'),
                 'logs' => $logRepository->findLogsByVersionGroupedByTypeWithDetails($versionId)
             ]
@@ -101,7 +101,7 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "releasedDate" => $version->getReleaseDate()?->format('Y-m-d'),
                 "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ]
         ]);
@@ -158,7 +158,7 @@ class VersionsController extends AbstractController
             "payload" => [
                 "id" => $version->getId(),
                 "name" => $version->getName(),
-                "releasedDate" => $version->getReleaseDate()->format('Y-m-d'),
+                "releasedDate" => $version->getReleaseDate()?->format('Y-m-d'),
                 "createdAt" => $version->getCreatedAt()->format('Y-m-d')
             ]
         ]);
